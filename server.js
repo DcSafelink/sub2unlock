@@ -1,3 +1,4 @@
+
 const express = require('express')
 const app = express()
 const fs = require('fs')
@@ -22,7 +23,10 @@ function htmlDOM (path, callback) {
 }
 
 function errorFile (res, html) {
-  window.open('https://sub2unlock.my.id');
+  fs.writeFile('./views/error.html', html, function (err) {
+    if (err) return err
+    renderHTML(res, './views/error.html')
+  })
 }
 
 app.use(express.static('public'))
@@ -43,7 +47,13 @@ app.get('/download', async function (req, res) {
       format: 'mp4'
     }).pipe(res)
   } catch (err) {
-    window.open('https://sub2unlock.my.id');
+    htmlDOM('./views/index.html', function (data) {
+      const { document } = new JSDOM(`${data}`).window
+      const errorText = document.body.querySelector('span.error-text')
+      errorText.textContent = `Sorry.. video url ${req.query.url} not found, please check your video url`
+      const html = document.documentElement.outerHTML
+
+      errorFile(res, html)
     })
   }
 })
@@ -61,7 +71,14 @@ app.get('/mp3', async function (req, res) {
       filter: 'audioonly'
     }).pipe(res)
   } catch (err) {
-    window.open('https://sub2unlock.my.id');
+    htmlDOM('./views/index.html', function (data) {
+      const { document } = new JSDOM(`${data}`).window
+      const errorText = document.body.querySelector('span.error-text')
+      errorText.textContent = `Sorry.. video url ${req.query.url} not found, please check your video url`
+      const html = document.documentElement.outerHTML
+
+      errorFile(res, html)
+    })
   }
 })
 
