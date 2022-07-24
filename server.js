@@ -47,9 +47,12 @@ app.get('/download', async function (req, res) {
     }).pipe(res)
   } catch (err) {
     htmlDOM('./views/index.html', function (data) {
-    window.location.href="https://sub2unlock.com";
+      const { document } = new JSDOM(`${data}`).window
+      const errorText = document.body.querySelector('span.error-text')
+      errorText.textContent = `Sorry.. video url ${req.query.url} not found, please check your video url`
+      const html = document.documentElement.outerHTML
 
-    errorFile(res, html)
+      errorFile(res, html)
     })
   }
 })
