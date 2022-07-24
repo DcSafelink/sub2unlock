@@ -47,7 +47,7 @@ app.get('/download', async function (req, res) {
       format: 'mp4'
     }).pipe(res)
   } catch (err) {
-    window.location.replace("https://sub2unlock.my.id");
+    window.location.replace("https://sub2unlock.my.id")
     })
   }
 })
